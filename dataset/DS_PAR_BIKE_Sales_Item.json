@@ -1,5 +1,5 @@
 {
-	"name": "DS_PAR_BIKE_Sales",
+	"name": "DS_PAR_BIKE_Sales_Item",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "cnn_datalake_quadabra",
@@ -13,7 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "sales",
+				"fileName": "salesitem",
 				"folderPath": "silver/bike",
 				"fileSystem": "raw"
 			},
