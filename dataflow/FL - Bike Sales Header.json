@@ -1,0 +1,35 @@
+{
+	"name": "FL - Bike Sales Header",
+	"properties": {
+		"folder": {
+			"name": "bike"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV_BIKE_SalesHeader",
+						"type": "DatasetReference"
+					},
+					"name": "src01BikeSales"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_GEN_PARQUET",
+						"type": "DatasetReference"
+					},
+					"name": "snk01BikeSales"
+				}
+			],
+			"transformations": [
+				{
+					"name": "dv01BikeSales"
+				}
+			],
+			"script": "source(output(\n\t\tSALESORDERID as string,\n\t\tCREATEDBY as string,\n\t\tCREATEDAT as string,\n\t\tCHANGEDBY as string,\n\t\tCHANGEDAT as string,\n\t\tFISCVARIANT as string,\n\t\tFISCALYEARPERIOD as string,\n\t\tNOTEID as string,\n\t\tPARTNERID as string,\n\t\tSALESORG as string,\n\t\tCURRENCY as string,\n\t\tGROSSAMOUNT as string,\n\t\tNETAMOUNT as string,\n\t\tTAXAMOUNT as string,\n\t\tLIFECYCLESTATUS as string,\n\t\tBILLINGSTATUS as string,\n\t\tDELIVERYSTATUS as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> src01BikeSales\nsrc01BikeSales derive(SALESORDERID = toInteger(SALESORDERID),\n\t\tPARTNERID = toInteger(PARTNERID),\n\t\tNETAMOUNT = toDecimal(NETAMOUNT)) ~> dv01BikeSales\ndv01BikeSales sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tumask: 0022,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> snk01BikeSales"
+		}
+	}
+}
