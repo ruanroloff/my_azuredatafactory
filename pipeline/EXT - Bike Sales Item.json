@@ -3,9 +3,40 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "DF - Sales Item",
+				"name": "FL - Bike Sales Header",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "FL - Bike Sales Header",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "FL - Bike Sales Item",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "FL - Bike Sales Header",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "1.00:00:00",
 					"retry": 0,
