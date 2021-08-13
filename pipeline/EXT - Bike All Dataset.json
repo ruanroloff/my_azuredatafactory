@@ -10,7 +10,7 @@
 				"typeProperties": {
 					"variableName": "varFile",
 					"value": [
-						"Employees.csv",
+						"Addresses.csv",
 						"ProductCategories.csv",
 						"Products.csv"
 					]
