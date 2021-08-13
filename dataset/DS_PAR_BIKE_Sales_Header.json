@@ -18,6 +18,81 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "SALESORDERID",
+				"type": "INT32"
+			},
+			{
+				"name": "CREATEDBY",
+				"type": "UTF8"
+			},
+			{
+				"name": "CREATEDAT",
+				"type": "UTF8"
+			},
+			{
+				"name": "CHANGEDBY",
+				"type": "UTF8"
+			},
+			{
+				"name": "CHANGEDAT",
+				"type": "UTF8"
+			},
+			{
+				"name": "FISCVARIANT",
+				"type": "UTF8"
+			},
+			{
+				"name": "FISCALYEARPERIOD",
+				"type": "UTF8"
+			},
+			{
+				"name": "NOTEID",
+				"type": "UTF8"
+			},
+			{
+				"name": "PARTNERID",
+				"type": "INT32"
+			},
+			{
+				"name": "SALESORG",
+				"type": "UTF8"
+			},
+			{
+				"name": "CURRENCY",
+				"type": "UTF8"
+			},
+			{
+				"name": "GROSSAMOUNT",
+				"type": "UTF8"
+			},
+			{
+				"name": "NETAMOUNT",
+				"type": "DECIMAL",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "TAXAMOUNT",
+				"type": "UTF8"
+			},
+			{
+				"name": "LIFECYCLESTATUS",
+				"type": "UTF8"
+			},
+			{
+				"name": "BILLINGSTATUS",
+				"type": "UTF8"
+			},
+			{
+				"name": "DELIVERYSTATUS",
+				"type": "UTF8"
+			},
+			{
+				"name": "ZPART_YEAR",
+				"type": "UTF8"
+			}
+		]
 	}
 }

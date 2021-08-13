@@ -1,0 +1,15 @@
+{
+	"name": "FL - Bike Load Sales",
+	"properties": {
+		"folder": {
+			"name": "bike"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [],
+			"script": ""
+		}
+	}
+}
