@@ -52,14 +52,6 @@
 									"storeSettings": {
 										"type": "AzureBlobFSReadSettings",
 										"recursive": true,
-										"wildcardFolderPath": {
-											"value": "@pipeline().parameters.paramPath",
-											"type": "Expression"
-										},
-										"wildcardFileName": {
-											"value": "@item()",
-											"type": "Expression"
-										},
 										"enablePartitionDiscovery": false
 									},
 									"formatSettings": {
@@ -88,13 +80,37 @@
 							"inputs": [
 								{
 									"referenceName": "DS_GEN_CSV",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"rootName": {
+											"value": "@pipeline().parameters.paramRoot",
+											"type": "Expression"
+										},
+										"pathName": {
+											"value": "@pipeline().parameters.paramPathRaw",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
 								}
 							],
 							"outputs": [
 								{
 									"referenceName": "DS_GEN_PARQUET",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"rootName": {
+											"value": "@pipeline().parameters.paramRoot",
+											"type": "Expression"
+										},
+										"pathName": {
+											"value": "concat(@pipeline().parameters.paramPathSilver,'/', @item)",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
@@ -106,7 +122,10 @@
 			"paramRoot": {
 				"type": "string"
 			},
-			"paramPath": {
+			"paramPathRaw": {
+				"type": "string"
+			},
+			"paramPathSilver": {
 				"type": "string"
 			}
 		},

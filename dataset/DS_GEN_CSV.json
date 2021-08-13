@@ -12,6 +12,9 @@
 			},
 			"pathName": {
 				"type": "string"
+			},
+			"fileName": {
+				"type": "string"
 			}
 		},
 		"folder": {
@@ -22,6 +25,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().fileName",
+					"type": "Expression"
+				},
 				"folderPath": {
 					"value": "@dataset().pathName",
 					"type": "Expression"
@@ -36,83 +43,6 @@
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": [
-			{
-				"name": "PRODUCTID",
-				"type": "String"
-			},
-			{
-				"name": "TYPECODE",
-				"type": "String"
-			},
-			{
-				"name": "PRODCATEGORYID",
-				"type": "String"
-			},
-			{
-				"name": "CREATEDBY",
-				"type": "String"
-			},
-			{
-				"name": "CREATEDAT",
-				"type": "String"
-			},
-			{
-				"name": "CHANGEDBY",
-				"type": "String"
-			},
-			{
-				"name": "CHANGEDAT",
-				"type": "String"
-			},
-			{
-				"name": "SUPPLIER_PARTNERID",
-				"type": "String"
-			},
-			{
-				"name": "TAXTARIFFCODE",
-				"type": "String"
-			},
-			{
-				"name": "QUANTITYUNIT",
-				"type": "String"
-			},
-			{
-				"name": "WEIGHTMEASURE",
-				"type": "String"
-			},
-			{
-				"name": "WEIGHTUNIT",
-				"type": "String"
-			},
-			{
-				"name": "CURRENCY",
-				"type": "String"
-			},
-			{
-				"name": "PRICE",
-				"type": "String"
-			},
-			{
-				"name": "WIDTH",
-				"type": "String"
-			},
-			{
-				"name": "DEPTH",
-				"type": "String"
-			},
-			{
-				"name": "HEIGHT",
-				"type": "String"
-			},
-			{
-				"name": "DIMENSIONUNIT",
-				"type": "String"
-			},
-			{
-				"name": "PRODUCTPICURL",
-				"type": "String"
-			}
-		]
+		"schema": []
 	}
 }
