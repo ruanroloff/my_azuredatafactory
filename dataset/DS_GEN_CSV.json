@@ -1,0 +1,103 @@
+{
+	"name": "DS_GEN_CSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "cnn_datalake_quadabra",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "generic"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "@dataset().pathName",
+				"fileSystem": "@dataset().rootName"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "PRODUCTID",
+				"type": "String"
+			},
+			{
+				"name": "TYPECODE",
+				"type": "String"
+			},
+			{
+				"name": "PRODCATEGORYID",
+				"type": "String"
+			},
+			{
+				"name": "CREATEDBY",
+				"type": "String"
+			},
+			{
+				"name": "CREATEDAT",
+				"type": "String"
+			},
+			{
+				"name": "CHANGEDBY",
+				"type": "String"
+			},
+			{
+				"name": "CHANGEDAT",
+				"type": "String"
+			},
+			{
+				"name": "SUPPLIER_PARTNERID",
+				"type": "String"
+			},
+			{
+				"name": "TAXTARIFFCODE",
+				"type": "String"
+			},
+			{
+				"name": "QUANTITYUNIT",
+				"type": "String"
+			},
+			{
+				"name": "WEIGHTMEASURE",
+				"type": "String"
+			},
+			{
+				"name": "WEIGHTUNIT",
+				"type": "String"
+			},
+			{
+				"name": "CURRENCY",
+				"type": "String"
+			},
+			{
+				"name": "PRICE",
+				"type": "String"
+			},
+			{
+				"name": "WIDTH",
+				"type": "String"
+			},
+			{
+				"name": "DEPTH",
+				"type": "String"
+			},
+			{
+				"name": "HEIGHT",
+				"type": "String"
+			},
+			{
+				"name": "DIMENSIONUNIT",
+				"type": "String"
+			},
+			{
+				"name": "PRODUCTPICURL",
+				"type": "String"
+			}
+		]
+	}
+}
