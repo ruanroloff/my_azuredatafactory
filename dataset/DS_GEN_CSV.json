@@ -5,6 +5,15 @@
 			"referenceName": "cnn_datalake_quadabra",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"rootName": {
+				"type": "string",
+				"defaultValue": "raw"
+			},
+			"pathName": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "generic"
 		},
