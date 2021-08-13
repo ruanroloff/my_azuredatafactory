@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-quadabra-dev"
+		},
+		"key_quadabra_bigdata_properties_typeProperties_baseUrl": {
+			"value": "https://kv-bigdataqu-dev.vault.azure.net/"
+		},
+		"cnn_datalake_quadabra_properties_typeProperties_url": {
+			"value": "https://datalaketaz.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}

@@ -1,0 +1,850 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-quadabra-dev"
+		},
+		"key_quadabra_bigdata_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://kv-bigdataqu-dev.vault.azure.net/"
+		},
+		"cnn_datalake_quadabra_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://datalaketaz.dfs.core.windows.net/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/key_quadabra_bigdata')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('key_quadabra_bigdata_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/cnn_datalake_quadabra')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('cnn_datalake_quadabra_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "key_quadabra_bigdata",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "datalakequadabra"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/key_quadabra_bigdata')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_GEN_CSV')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "cnn_datalake_quadabra",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"rootName": {
+						"type": "string",
+						"defaultValue": "raw"
+					},
+					"pathName": {
+						"type": "string"
+					},
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "generic"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().fileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().pathName",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().rootName",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/cnn_datalake_quadabra')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_GEN_PARQUET')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "cnn_datalake_quadabra",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"rootName": {
+						"type": "string",
+						"defaultValue": "raw"
+					},
+					"pathName": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "generic"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().pathName",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().rootName",
+							"type": "Expression"
+						}
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/cnn_datalake_quadabra')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_PAR_BIKE_Sales')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "cnn_datalake_quadabra",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "datalake/raw/bike"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "sales",
+						"folderPath": "silver/bike",
+						"fileSystem": "raw"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/cnn_datalake_quadabra')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EXT - Bike Sales Item')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DF - Sales Item",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "FL - Bike Sales Item",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"src01BikeSales": {},
+									"snk01BikeSales": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "DF - Sales Header",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "DF - Sales Item",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "FL - Bike Sales Header",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"src01BikeSales": {},
+									"snk01BikeSales": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"folder": {
+					"name": "bike/extract"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/FL - Bike Sales Item')]",
+				"[concat(variables('factoryId'), '/dataflows/FL - Bike Sales Header')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EXT - Bike All Dataset')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Set Tables",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "varFile",
+							"value": [
+								"1",
+								"2",
+								"3"
+							]
+						}
+					},
+					{
+						"name": "FOR - Bike CSV to Parquet",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Set Tables",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('varFile')",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "CP - Bike CSV to Parquet",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "DS_GEN_CSV",
+											"type": "DatasetReference",
+											"parameters": {
+												"rootName": {
+													"value": "@pipeline().parameters.paramRoot",
+													"type": "Expression"
+												},
+												"pathName": {
+													"value": "@pipeline().parameters.paramPathRaw",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@item()",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DS_GEN_PARQUET",
+											"type": "DatasetReference",
+											"parameters": {
+												"rootName": {
+													"value": "@pipeline().parameters.paramRoot",
+													"type": "Expression"
+												},
+												"pathName": {
+													"value": "concat(@pipeline().parameters.paramPathSilver,'/', @item)",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"paramRoot": {
+						"type": "string"
+					},
+					"paramPathRaw": {
+						"type": "string"
+					},
+					"paramPathSilver": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"varFile": {
+						"type": "Array",
+						"defaultValue": [
+							"1",
+							"2",
+							"3"
+						]
+					}
+				},
+				"folder": {
+					"name": "bike/extract"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_GEN_CSV')]",
+				"[concat(variables('factoryId'), '/datasets/DS_GEN_PARQUET')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TRF - Bike Sales')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "varTest",
+							"value": "aaa"
+						}
+					}
+				],
+				"variables": {
+					"varTest": {
+						"type": "String",
+						"defaultValue": "aaa"
+					}
+				},
+				"folder": {
+					"name": "bike/load"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_CSV_BIKE_SalesHeader')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "cnn_datalake_quadabra",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "system/bike/csv"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "SalesOrders.csv",
+						"folderPath": "origin/bike",
+						"fileSystem": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "SALESORDERID",
+						"type": "String"
+					},
+					{
+						"name": "CREATEDBY",
+						"type": "String"
+					},
+					{
+						"name": "CREATEDAT",
+						"type": "String"
+					},
+					{
+						"name": "CHANGEDBY",
+						"type": "String"
+					},
+					{
+						"name": "CHANGEDAT",
+						"type": "String"
+					},
+					{
+						"name": "FISCVARIANT",
+						"type": "String"
+					},
+					{
+						"name": "FISCALYEARPERIOD",
+						"type": "String"
+					},
+					{
+						"name": "NOTEID",
+						"type": "String"
+					},
+					{
+						"name": "PARTNERID",
+						"type": "String"
+					},
+					{
+						"name": "SALESORG",
+						"type": "String"
+					},
+					{
+						"name": "CURRENCY",
+						"type": "String"
+					},
+					{
+						"name": "GROSSAMOUNT",
+						"type": "String"
+					},
+					{
+						"name": "NETAMOUNT",
+						"type": "String"
+					},
+					{
+						"name": "TAXAMOUNT",
+						"type": "String"
+					},
+					{
+						"name": "LIFECYCLESTATUS",
+						"type": "String"
+					},
+					{
+						"name": "BILLINGSTATUS",
+						"type": "String"
+					},
+					{
+						"name": "DELIVERYSTATUS",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/cnn_datalake_quadabra')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_CSV_BIKE_SalesItem')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "cnn_datalake_quadabra",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "system/bike/csv"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "SalesOrderItems.csv",
+						"folderPath": "origin/bike",
+						"fileSystem": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "SALESORDERID",
+						"type": "String"
+					},
+					{
+						"name": "SALESORDERITEM",
+						"type": "String"
+					},
+					{
+						"name": "PRODUCTID",
+						"type": "String"
+					},
+					{
+						"name": "NOTEID",
+						"type": "String"
+					},
+					{
+						"name": "CURRENCY",
+						"type": "String"
+					},
+					{
+						"name": "GROSSAMOUNT",
+						"type": "String"
+					},
+					{
+						"name": "NETAMOUNT",
+						"type": "String"
+					},
+					{
+						"name": "TAXAMOUNT",
+						"type": "String"
+					},
+					{
+						"name": "ITEMATPSTATUS",
+						"type": "String"
+					},
+					{
+						"name": "OPITEMPOS",
+						"type": "String"
+					},
+					{
+						"name": "QUANTITY",
+						"type": "String"
+					},
+					{
+						"name": "QUANTITYUNIT",
+						"type": "String"
+					},
+					{
+						"name": "DELIVERYDATE",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/cnn_datalake_quadabra')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FL - Bike Sales Header')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "bike"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DS_CSV_BIKE_SalesHeader",
+								"type": "DatasetReference"
+							},
+							"name": "src01BikeSales"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DS_PAR_BIKE_Sales_Header",
+								"type": "DatasetReference"
+							},
+							"name": "snk01BikeSales"
+						}
+					],
+					"transformations": [
+						{
+							"name": "dv01BikeSales"
+						}
+					],
+					"script": "source(output(\n\t\tSALESORDERID as string,\n\t\tCREATEDBY as string,\n\t\tCREATEDAT as string,\n\t\tCHANGEDBY as string,\n\t\tCHANGEDAT as string,\n\t\tFISCVARIANT as string,\n\t\tFISCALYEARPERIOD as string,\n\t\tNOTEID as string,\n\t\tPARTNERID as string,\n\t\tSALESORG as string,\n\t\tCURRENCY as string,\n\t\tGROSSAMOUNT as string,\n\t\tNETAMOUNT as string,\n\t\tTAXAMOUNT as string,\n\t\tLIFECYCLESTATUS as string,\n\t\tBILLINGSTATUS as string,\n\t\tDELIVERYSTATUS as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> src01BikeSales\nsrc01BikeSales derive(SALESORDERID = toInteger(SALESORDERID),\n\t\tPARTNERID = toInteger(PARTNERID),\n\t\tNETAMOUNT = toDecimal(NETAMOUNT),\n\t\tZPART_YEAR = year(toDate(CREATEDBY))) ~> dv01BikeSales\ndv01BikeSales sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tumask: 0022,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('key',\n\t\t0,\n\t\tZPART_YEAR\n\t)) ~> snk01BikeSales"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_CSV_BIKE_SalesHeader')]",
+				"[concat(variables('factoryId'), '/datasets/DS_PAR_BIKE_Sales_Header')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_PAR_BIKE_Sales_Header')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "cnn_datalake_quadabra",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "datalake/raw/bike"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "silver/bike/salesheader",
+						"fileSystem": "raw"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/cnn_datalake_quadabra')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FL - Bike Sales Item')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "bike"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DS_CSV_BIKE_SalesItem",
+								"type": "DatasetReference"
+							},
+							"name": "src01BikeSales"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DS_PAR_BIKE_Sales_Header",
+								"type": "DatasetReference"
+							},
+							"name": "snk01BikeSales"
+						}
+					],
+					"transformations": [
+						{
+							"name": "dv01BikeSales"
+						}
+					],
+					"script": "source(output(\n\t\tSALESORDERID as integer,\n\t\tSALESORDERITEM as integer,\n\t\tPRODUCTID as string,\n\t\tNOTEID as string,\n\t\tCURRENCY as string,\n\t\tGROSSAMOUNT as string,\n\t\tNETAMOUNT as decimal(10,0),\n\t\tTAXAMOUNT as decimal(10,0),\n\t\tITEMATPSTATUS as string,\n\t\tOPITEMPOS as string,\n\t\tQUANTITY as integer,\n\t\tQUANTITYUNIT as string,\n\t\tDELIVERYDATE as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> src01BikeSales\nsrc01BikeSales derive(ZPART_YEAR = 2020) ~> dv01BikeSales\ndv01BikeSales sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tumask: 0022,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> snk01BikeSales"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_CSV_BIKE_SalesItem')]",
+				"[concat(variables('factoryId'), '/datasets/DS_PAR_BIKE_Sales_Header')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_PAR_BIKE_Sales_Item')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "cnn_datalake_quadabra",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "datalake/raw/bike"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "silver/bike/salesitem",
+						"fileSystem": "raw"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/cnn_datalake_quadabra')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ORC - Bike Pipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "EXT - Bike All Dataset",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT - Bike All Dataset",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "EXT - Bike Sales Item",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "TRF - Bike Sales",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "EXT - Bike Sales Item",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "TRF - Bike Sales",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EXT - Bike All Dataset",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "TRF - Bike Sales",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"folder": {
+					"name": "bike/orchestration"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/EXT - Bike All Dataset')]",
+				"[concat(variables('factoryId'), '/pipelines/EXT - Bike Sales Item')]",
+				"[concat(variables('factoryId'), '/pipelines/TRF - Bike Sales')]"
+			]
+		}
+	]
+}
