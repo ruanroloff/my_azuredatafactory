@@ -170,7 +170,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": "sales",
-						"folderPath": "silver/bike",
+						"folderPath": "silver/bike/sales",
 						"fileSystem": "raw"
 					},
 					"compressionCodec": "snappy"
@@ -188,7 +188,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "DF - Sales Item",
+						"name": "FL - Bike Sales Header",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -201,12 +201,12 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "FL - Bike Sales Item",
+								"referenceName": "FL - Bike Sales Header",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"src01BikeSales": {},
-									"snk01BikeSales": {}
+									"src01BikeSalesHeader": {},
+									"snk01BikeSalesHeader": {}
 								}
 							},
 							"staging": {},
@@ -218,11 +218,11 @@
 						}
 					},
 					{
-						"name": "DF - Sales Header",
+						"name": "FL - Bike Sales Item",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
-								"activity": "DF - Sales Item",
+								"activity": "FL - Bike Sales Header",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -238,12 +238,12 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "FL - Bike Sales Header",
+								"referenceName": "FL - Bike Sales Item",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"src01BikeSales": {},
-									"snk01BikeSales": {}
+									"src01BikeSalesItem": {},
+									"snk01BikeSalesItem": {}
 								}
 							},
 							"staging": {},
@@ -261,8 +261,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/FL - Bike Sales Item')]",
-				"[concat(variables('factoryId'), '/dataflows/FL - Bike Sales Header')]"
+				"[concat(variables('factoryId'), '/dataflows/FL - Bike Sales Header')]",
+				"[concat(variables('factoryId'), '/dataflows/FL - Bike Sales Item')]"
 			]
 		},
 		{
@@ -650,7 +650,7 @@
 								"referenceName": "DS_CSV_BIKE_SalesHeader",
 								"type": "DatasetReference"
 							},
-							"name": "src01BikeSales"
+							"name": "src01BikeSalesHeader"
 						}
 					],
 					"sinks": [
@@ -659,7 +659,7 @@
 								"referenceName": "DS_PAR_BIKE_Sales_Header",
 								"type": "DatasetReference"
 							},
-							"name": "snk01BikeSales"
+							"name": "snk01BikeSalesHeader"
 						}
 					],
 					"transformations": [
@@ -667,7 +667,7 @@
 							"name": "dv01BikeSales"
 						}
 					],
-					"script": "source(output(\n\t\tSALESORDERID as string,\n\t\tCREATEDBY as string,\n\t\tCREATEDAT as string,\n\t\tCHANGEDBY as string,\n\t\tCHANGEDAT as string,\n\t\tFISCVARIANT as string,\n\t\tFISCALYEARPERIOD as string,\n\t\tNOTEID as string,\n\t\tPARTNERID as string,\n\t\tSALESORG as string,\n\t\tCURRENCY as string,\n\t\tGROSSAMOUNT as string,\n\t\tNETAMOUNT as string,\n\t\tTAXAMOUNT as string,\n\t\tLIFECYCLESTATUS as string,\n\t\tBILLINGSTATUS as string,\n\t\tDELIVERYSTATUS as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> src01BikeSales\nsrc01BikeSales derive(SALESORDERID = toInteger(SALESORDERID),\n\t\tPARTNERID = toInteger(PARTNERID),\n\t\tNETAMOUNT = toDecimal(NETAMOUNT),\n\t\tZPART_YEAR = year(toDate(CREATEDBY))) ~> dv01BikeSales\ndv01BikeSales sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tumask: 0022,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('key',\n\t\t0,\n\t\tZPART_YEAR\n\t)) ~> snk01BikeSales"
+					"script": "source(output(\n\t\tSALESORDERID as string,\n\t\tCREATEDBY as string,\n\t\tCREATEDAT as string,\n\t\tCHANGEDBY as string,\n\t\tCHANGEDAT as string,\n\t\tFISCVARIANT as string,\n\t\tFISCALYEARPERIOD as string,\n\t\tNOTEID as string,\n\t\tPARTNERID as string,\n\t\tSALESORG as string,\n\t\tCURRENCY as string,\n\t\tGROSSAMOUNT as string,\n\t\tNETAMOUNT as string,\n\t\tTAXAMOUNT as string,\n\t\tLIFECYCLESTATUS as string,\n\t\tBILLINGSTATUS as string,\n\t\tDELIVERYSTATUS as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> src01BikeSalesHeader\nsrc01BikeSalesHeader derive(SALESORDERID = toInteger(SALESORDERID),\n\t\tPARTNERID = toInteger(PARTNERID),\n\t\tNETAMOUNT = toDecimal(NETAMOUNT),\n\t\tZPART_YEAR = year(toDate(CREATEDBY))) ~> dv01BikeSales\ndv01BikeSales sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tSALESORDERID as integer,\n\t\tCREATEDBY as string,\n\t\tCREATEDAT as string,\n\t\tCHANGEDBY as string,\n\t\tCHANGEDAT as string,\n\t\tFISCVARIANT as string,\n\t\tFISCALYEARPERIOD as string,\n\t\tNOTEID as string,\n\t\tPARTNERID as integer,\n\t\tSALESORG as string,\n\t\tCURRENCY as string,\n\t\tGROSSAMOUNT as string,\n\t\tNETAMOUNT as decimal(10,2),\n\t\tTAXAMOUNT as string,\n\t\tLIFECYCLESTATUS as string,\n\t\tBILLINGSTATUS as string,\n\t\tDELIVERYSTATUS as string,\n\t\tZPART_YEAR as string\n\t),\n\tformat: 'parquet',\n\tumask: 0022,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('key',\n\t\t0,\n\t\tZPART_YEAR\n\t)) ~> snk01BikeSalesHeader"
 				}
 			},
 			"dependsOn": [
@@ -697,7 +697,82 @@
 					},
 					"compressionCodec": "snappy"
 				},
-				"schema": []
+				"schema": [
+					{
+						"name": "SALESORDERID",
+						"type": "INT32"
+					},
+					{
+						"name": "CREATEDBY",
+						"type": "UTF8"
+					},
+					{
+						"name": "CREATEDAT",
+						"type": "UTF8"
+					},
+					{
+						"name": "CHANGEDBY",
+						"type": "UTF8"
+					},
+					{
+						"name": "CHANGEDAT",
+						"type": "UTF8"
+					},
+					{
+						"name": "FISCVARIANT",
+						"type": "UTF8"
+					},
+					{
+						"name": "FISCALYEARPERIOD",
+						"type": "UTF8"
+					},
+					{
+						"name": "NOTEID",
+						"type": "UTF8"
+					},
+					{
+						"name": "PARTNERID",
+						"type": "INT32"
+					},
+					{
+						"name": "SALESORG",
+						"type": "UTF8"
+					},
+					{
+						"name": "CURRENCY",
+						"type": "UTF8"
+					},
+					{
+						"name": "GROSSAMOUNT",
+						"type": "UTF8"
+					},
+					{
+						"name": "NETAMOUNT",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 2
+					},
+					{
+						"name": "TAXAMOUNT",
+						"type": "UTF8"
+					},
+					{
+						"name": "LIFECYCLESTATUS",
+						"type": "UTF8"
+					},
+					{
+						"name": "BILLINGSTATUS",
+						"type": "UTF8"
+					},
+					{
+						"name": "DELIVERYSTATUS",
+						"type": "UTF8"
+					},
+					{
+						"name": "ZPART_YEAR",
+						"type": "UTF8"
+					}
+				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/cnn_datalake_quadabra')]"
@@ -719,16 +794,16 @@
 								"referenceName": "DS_CSV_BIKE_SalesItem",
 								"type": "DatasetReference"
 							},
-							"name": "src01BikeSales"
+							"name": "src01BikeSalesItem"
 						}
 					],
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "DS_PAR_BIKE_Sales_Header",
+								"referenceName": "DS_PAR_BIKE_Sales_Item",
 								"type": "DatasetReference"
 							},
-							"name": "snk01BikeSales"
+							"name": "snk01BikeSalesItem"
 						}
 					],
 					"transformations": [
@@ -736,12 +811,12 @@
 							"name": "dv01BikeSales"
 						}
 					],
-					"script": "source(output(\n\t\tSALESORDERID as integer,\n\t\tSALESORDERITEM as integer,\n\t\tPRODUCTID as string,\n\t\tNOTEID as string,\n\t\tCURRENCY as string,\n\t\tGROSSAMOUNT as string,\n\t\tNETAMOUNT as decimal(10,0),\n\t\tTAXAMOUNT as decimal(10,0),\n\t\tITEMATPSTATUS as string,\n\t\tOPITEMPOS as string,\n\t\tQUANTITY as integer,\n\t\tQUANTITYUNIT as string,\n\t\tDELIVERYDATE as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> src01BikeSales\nsrc01BikeSales derive(ZPART_YEAR = 2020) ~> dv01BikeSales\ndv01BikeSales sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tumask: 0022,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> snk01BikeSales"
+					"script": "source(output(\n\t\tSALESORDERID as integer,\n\t\tSALESORDERITEM as integer,\n\t\tPRODUCTID as string,\n\t\tNOTEID as string,\n\t\tCURRENCY as string,\n\t\tGROSSAMOUNT as string,\n\t\tNETAMOUNT as decimal(10,0),\n\t\tTAXAMOUNT as decimal(10,0),\n\t\tITEMATPSTATUS as string,\n\t\tOPITEMPOS as string,\n\t\tQUANTITY as integer,\n\t\tQUANTITYUNIT as string,\n\t\tDELIVERYDATE as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> src01BikeSalesItem\nsrc01BikeSalesItem derive(ZPART_YEAR = 2020) ~> dv01BikeSales\ndv01BikeSales sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tumask: 0022,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> snk01BikeSalesItem"
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DS_CSV_BIKE_SalesItem')]",
-				"[concat(variables('factoryId'), '/datasets/DS_PAR_BIKE_Sales_Header')]"
+				"[concat(variables('factoryId'), '/datasets/DS_PAR_BIKE_Sales_Item')]"
 			]
 		},
 		{
