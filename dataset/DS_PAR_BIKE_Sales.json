@@ -14,7 +14,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "sales",
-				"folderPath": "silver/bike",
+				"folderPath": "silver/bike/sales",
 				"fileSystem": "raw"
 			},
 			"compressionCodec": "snappy"
