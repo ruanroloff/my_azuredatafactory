@@ -1,0 +1,24 @@
+{
+	"name": "DS_PAR_BIKE_Sales_Header",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "cnn_datalake_quadabra",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "datalake/raw/bike"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "salesheader",
+				"folderPath": "silver/bike",
+				"fileSystem": "raw"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
