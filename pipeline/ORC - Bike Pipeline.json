@@ -29,7 +29,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "EXT - Bike Sales Item",
+						"referenceName": "EXT - Bike Sales Header And Item",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
