@@ -1,0 +1,23 @@
+{
+	"name": "DS_GEN_PARQUET",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "cnn_datalake_quadabra",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "generic"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "@dataset().pathName",
+				"fileSystem": "@dataset().rootName"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}

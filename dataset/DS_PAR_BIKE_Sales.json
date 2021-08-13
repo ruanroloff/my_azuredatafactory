@@ -1,0 +1,23 @@
+{
+	"name": "DS_PAR_BIKE_Sales",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "cnn_datalake_quadabra",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "datalake/raw/bike"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "silver",
+				"fileSystem": "raw"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
