@@ -1,0 +1,9 @@
+{
+	"name": "ZL - Bike Sales",
+	"properties": {
+		"folder": {
+			"name": "bike/load"
+		},
+		"annotations": []
+	}
+}

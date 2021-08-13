@@ -1,0 +1,9 @@
+{
+	"name": "EXT - Bike Sales Header",
+	"properties": {
+		"folder": {
+			"name": "bike/extract"
+		},
+		"annotations": []
+	}
+}

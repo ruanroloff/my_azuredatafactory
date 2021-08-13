@@ -1,0 +1,9 @@
+{
+	"name": "ZL -All Dataset",
+	"properties": {
+		"folder": {
+			"name": "bike/load"
+		},
+		"annotations": []
+	}
+}

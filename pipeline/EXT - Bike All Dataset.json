@@ -1,0 +1,9 @@
+{
+	"name": "EXT - Bike All Dataset",
+	"properties": {
+		"folder": {
+			"name": "bike/extract"
+		},
+		"annotations": []
+	}
+}

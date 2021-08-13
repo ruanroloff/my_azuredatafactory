@@ -1,0 +1,9 @@
+{
+	"name": "EXT - Bike Sales",
+	"properties": {
+		"folder": {
+			"name": "bike/extract"
+		},
+		"annotations": []
+	}
+}
