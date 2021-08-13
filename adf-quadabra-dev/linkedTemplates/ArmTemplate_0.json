@@ -542,9 +542,10 @@
 						"typeProperties": {
 							"variableName": "varFile",
 							"value": [
-								"1",
-								"2",
-								"3"
+								"Employees.csv",
+								"ProductCategories.csv",
+								"Products.csv",
+								"Addresses.csv"
 							]
 						}
 					},
@@ -652,13 +653,16 @@
 				],
 				"parameters": {
 					"paramRoot": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "raw"
 					},
 					"paramPathRaw": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "origin/bike"
 					},
 					"paramPathSilver": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "silver/bike"
 					}
 				},
 				"variables": {
