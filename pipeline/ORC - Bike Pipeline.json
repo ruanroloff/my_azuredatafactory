@@ -1,0 +1,64 @@
+{
+	"name": "ORC - Bike Pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "EXT - Bike All Dataset",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT - Bike All Dataset",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EXT - Bike Sales Item",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "TRF - Bike Sales",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "EXT - Bike Sales Item",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "TRF - Bike Sales",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EXT - Bike All Dataset",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "TRF - Bike Sales",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "bike/orchestration"
+		},
+		"annotations": []
+	}
+}
