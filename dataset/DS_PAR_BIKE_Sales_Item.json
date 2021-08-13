@@ -13,8 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "salesitem",
-				"folderPath": "silver/bike",
+				"folderPath": "silver/bike/salesitem",
 				"fileSystem": "raw"
 			},
 			"compressionCodec": "snappy"

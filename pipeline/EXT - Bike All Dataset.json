@@ -6,7 +6,13 @@
 				"name": "Set Tables",
 				"type": "SetVariable",
 				"dependsOn": [],
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "varFile",
+					"value": [
+						"['1','2','3']\n"
+					]
+				}
 			},
 			{
 				"name": "FOR - Bike CSV to Parquet",
@@ -21,6 +27,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@variables('varFile')",
+						"type": "Expression"
+					},
 					"activities": [
 						{
 							"name": "CP - Bike CSV to Parquet",
@@ -40,6 +50,14 @@
 									"storeSettings": {
 										"type": "AzureBlobFSReadSettings",
 										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@pipeline().parameters.paramPath",
+											"type": "Expression"
+										},
+										"wildcardFileName": {
+											"value": "@item()",
+											"type": "Expression"
+										},
 										"enablePartitionDiscovery": false
 									},
 									"formatSettings": {
@@ -82,6 +100,22 @@
 				}
 			}
 		],
+		"parameters": {
+			"paramRoot": {
+				"type": "string"
+			},
+			"paramPath": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"varFile": {
+				"type": "Array",
+				"defaultValue": [
+					"['1','2','3']"
+				]
+			}
+		},
 		"folder": {
 			"name": "bike/extract"
 		},

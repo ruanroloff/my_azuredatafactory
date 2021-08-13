@@ -1,6 +1,24 @@
 {
 	"name": "TRF - Bike Sales",
 	"properties": {
+		"activities": [
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "varTest",
+					"value": "aaa"
+				}
+			}
+		],
+		"variables": {
+			"varTest": {
+				"type": "String",
+				"defaultValue": "aaa"
+			}
+		},
 		"folder": {
 			"name": "bike/load"
 		},
