@@ -16,11 +16,11 @@
 				}
 			},
 			{
-				"name": "EXT - Bike Sales Item",
+				"name": "EXT - Bike Sales Header And Item",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "TRF - Bike Sales",
+						"activity": "EXT - Bike All Dataset",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -40,7 +40,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "EXT - Bike All Dataset",
+						"activity": "EXT - Bike Sales Header And Item",
 						"dependencyConditions": [
 							"Succeeded"
 						]
