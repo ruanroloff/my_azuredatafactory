@@ -10,7 +10,9 @@
 				"typeProperties": {
 					"variableName": "varFile",
 					"value": [
-						"['1','2','3']\n"
+						"1",
+						"2",
+						"3"
 					]
 				}
 			},
@@ -112,7 +114,9 @@
 			"varFile": {
 				"type": "Array",
 				"defaultValue": [
-					"['1','2','3']"
+					"1",
+					"2",
+					"3"
 				]
 			}
 		},
