@@ -1,6 +1,87 @@
 {
 	"name": "EXT - Bike All Dataset",
 	"properties": {
+		"activities": [
+			{
+				"name": "Set Tables",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": []
+			},
+			{
+				"name": "FOR - Bike CSV to Parquet",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Set Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"activities": [
+						{
+							"name": "CP - Bike CSV to Parquet",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_GEN_CSV",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_GEN_PARQUET",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
 		"folder": {
 			"name": "bike/extract"
 		},
