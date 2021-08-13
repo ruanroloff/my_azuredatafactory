@@ -182,7 +182,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/EXT - Bike Sales Item')]",
+			"name": "[concat(parameters('factoryName'), '/EXT - Bike Sales Header And Item')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -279,7 +279,7 @@
 						"typeProperties": {
 							"variableName": "varFile",
 							"value": [
-								"Employees.csv",
+								"Addresses.csv",
 								"ProductCategories.csv",
 								"Products.csv"
 							]
@@ -871,11 +871,11 @@
 						}
 					},
 					{
-						"name": "EXT - Bike Sales Item",
+						"name": "EXT - Bike Sales Header And Item",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "TRF - Bike Sales",
+								"activity": "EXT - Bike All Dataset",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -884,7 +884,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "EXT - Bike Sales Item",
+								"referenceName": "EXT - Bike Sales Header And Item",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -896,7 +896,7 @@
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "EXT - Bike All Dataset",
+								"activity": "EXT - Bike Sales Header And Item",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -920,7 +920,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/EXT - Bike All Dataset')]",
-				"[concat(variables('factoryId'), '/pipelines/EXT - Bike Sales Item')]",
+				"[concat(variables('factoryId'), '/pipelines/EXT - Bike Sales Header And Item')]",
 				"[concat(variables('factoryId'), '/pipelines/TRF - Bike Sales')]"
 			]
 		}
