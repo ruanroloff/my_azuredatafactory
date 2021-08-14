@@ -18,6 +18,67 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "SALESORDERID",
+				"type": "INT32"
+			},
+			{
+				"name": "SALESORDERITEM",
+				"type": "INT32"
+			},
+			{
+				"name": "PRODUCTID",
+				"type": "UTF8"
+			},
+			{
+				"name": "NOTEID",
+				"type": "UTF8"
+			},
+			{
+				"name": "CURRENCY",
+				"type": "UTF8"
+			},
+			{
+				"name": "GROSSAMOUNT",
+				"type": "UTF8"
+			},
+			{
+				"name": "NETAMOUNT",
+				"type": "DECIMAL",
+				"precision": 10,
+				"scale": 0
+			},
+			{
+				"name": "TAXAMOUNT",
+				"type": "DECIMAL",
+				"precision": 10,
+				"scale": 0
+			},
+			{
+				"name": "ITEMATPSTATUS",
+				"type": "UTF8"
+			},
+			{
+				"name": "OPITEMPOS",
+				"type": "UTF8"
+			},
+			{
+				"name": "QUANTITY",
+				"type": "INT32"
+			},
+			{
+				"name": "QUANTITYUNIT",
+				"type": "UTF8"
+			},
+			{
+				"name": "DELIVERYDATE",
+				"type": "UTF8"
+			},
+			{
+				"name": "ZPART_YEAR",
+				"type": "INT32"
+			}
+		]
 	}
 }
