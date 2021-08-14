@@ -1075,6 +1075,30 @@
 				"[concat(variables('factoryId'), '/datasets/DS_PAR_BIKE_Sales_Item')]",
 				"[concat(variables('factoryId'), '/datasets/DS_PAR_BIKE_Sales')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/srv_databricks_quadabra')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-4563740733962799.19.azuredatabricks.net",
+					"accessToken": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "key_quadabra_bigdata",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "adfDatabricks"
+					},
+					"existingClusterId": "0814-004418-lanes524"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/key_quadabra_bigdata')]"
+			]
 		}
 	]
 }
