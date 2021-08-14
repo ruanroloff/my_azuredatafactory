@@ -13,13 +13,7 @@
 				},
 				"secretName": "adfDatabricks"
 			},
-			"newClusterNodeType": "Standard_DS4_v2",
-			"newClusterNumOfWorker": "1",
-			"newClusterSparkEnvVars": {
-				"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
-			},
-			"newClusterVersion": "8.4.x-scala2.12",
-			"newClusterInitScripts": []
+			"existingClusterId": "0814-004418-lanes524"
 		}
 	}
 }
