@@ -939,7 +939,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Set variable1",
+						"name": "Set Var Test",
 						"type": "SetVariable",
 						"dependsOn": [],
 						"userProperties": [],
@@ -953,7 +953,7 @@
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
-								"activity": "Set variable1",
+								"activity": "Set Var Test",
 								"dependencyConditions": [
 									"Succeeded"
 								]
