@@ -15,7 +15,11 @@
 					"name": "src01SalesHeader"
 				},
 				{
-					"name": "source1"
+					"dataset": {
+						"referenceName": "DS_PAR_BIKE_Sales_Item",
+						"type": "DatasetReference"
+					},
+					"name": "src02SalesItem"
 				}
 			],
 			"sinks": [
@@ -35,7 +39,7 @@
 					"name": "sel01Sales"
 				}
 			],
-			"script": "source(output(\n\t\tSALESORDERID as integer,\n\t\tCREATEDBY as string,\n\t\tCREATEDAT as string,\n\t\tCHANGEDBY as string,\n\t\tCHANGEDAT as string,\n\t\tFISCVARIANT as string,\n\t\tFISCALYEARPERIOD as string,\n\t\tNOTEID as string,\n\t\tPARTNERID as integer,\n\t\tSALESORG as string,\n\t\tCURRENCY as string,\n\t\tGROSSAMOUNT as string,\n\t\tNETAMOUNT as decimal(10,2),\n\t\tTAXAMOUNT as string,\n\t\tLIFECYCLESTATUS as string,\n\t\tBILLINGSTATUS as string,\n\t\tDELIVERYSTATUS as string,\n\t\tZPART_YEAR as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> src01SalesHeader\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> source1\nsrc01SalesHeader, source1 join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> jn01Sales\njn01Sales select(mapColumn(\n\t\tSALESORDERID,\n\t\tCREATEDBY,\n\t\tCREATEDAT,\n\t\tNETAMOUNT,\n\t\tTAXAMOUNT,\n\t\tBILLINGSTATUS,\n\t\tDELIVERYSTATUS,\n\t\tZPART_YEAR\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sel01Sales\nsel01Sales sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tumask: 0022,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('key',\n\t\t0,\n\t\tZPART_YEAR\n\t)) ~> snk01Sales"
+			"script": "source(output(\n\t\tSALESORDERID as integer,\n\t\tCREATEDBY as string,\n\t\tCREATEDAT as string,\n\t\tCHANGEDBY as string,\n\t\tCHANGEDAT as string,\n\t\tFISCVARIANT as string,\n\t\tFISCALYEARPERIOD as string,\n\t\tNOTEID as string,\n\t\tPARTNERID as integer,\n\t\tSALESORG as string,\n\t\tCURRENCY as string,\n\t\tGROSSAMOUNT as string,\n\t\tNETAMOUNT as decimal(10,2),\n\t\tTAXAMOUNT as string,\n\t\tLIFECYCLESTATUS as string,\n\t\tBILLINGSTATUS as string,\n\t\tDELIVERYSTATUS as string,\n\t\tZPART_YEAR as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> src01SalesHeader\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> src02SalesItem\nsrc01SalesHeader, src02SalesItem join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> jn01Sales\njn01Sales select(mapColumn(\n\t\tSALESORDERID,\n\t\tCREATEDBY,\n\t\tCREATEDAT,\n\t\tNETAMOUNT,\n\t\tTAXAMOUNT,\n\t\tBILLINGSTATUS,\n\t\tDELIVERYSTATUS,\n\t\tZPART_YEAR\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sel01Sales\nsel01Sales sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tumask: 0022,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('key',\n\t\t0,\n\t\tZPART_YEAR\n\t)) ~> snk01Sales"
 		}
 	}
 }
