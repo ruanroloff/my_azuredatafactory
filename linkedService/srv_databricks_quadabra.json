@@ -1,0 +1,25 @@
+{
+	"name": "srv_databricks_quadabra",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDatabricks",
+		"typeProperties": {
+			"domain": "https://adb-4563740733962799.19.azuredatabricks.net",
+			"accessToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "key_quadabra_bigdata",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfDatabricks"
+			},
+			"newClusterNodeType": "Standard_DS4_v2",
+			"newClusterNumOfWorker": "1",
+			"newClusterSparkEnvVars": {
+				"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
+			},
+			"newClusterVersion": "8.4.x-scala2.12",
+			"newClusterInitScripts": []
+		}
+	}
+}
