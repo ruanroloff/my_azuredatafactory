@@ -11,7 +11,7 @@
 					"referenceName": "key_quadabra_bigdata",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "datalakequadabra"
+				"secretName": "adfDatalake"
 			}
 		}
 	}
