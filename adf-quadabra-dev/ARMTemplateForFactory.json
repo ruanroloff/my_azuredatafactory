@@ -1099,6 +1099,69 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/key_quadabra_bigdata')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DBCK - Pipe 01')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Set DBCK Env Var",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/ruanroloff@hotmail.com/project/bike/00 - env/ENV00 - Setup"
+						},
+						"linkedServiceName": {
+							"referenceName": "srv_databricks_quadabra",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "DBCK - 01 Data Proc",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "Set DBCK Env Var",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/ruanroloff@hotmail.com/project/bike/01 - ingestion/DI01 - data ingestion"
+						},
+						"linkedServiceName": {
+							"referenceName": "srv_databricks_quadabra",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"folder": {
+					"name": "databricks_bike"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/srv_databricks_quadabra')]"
+			]
 		}
 	]
 }
