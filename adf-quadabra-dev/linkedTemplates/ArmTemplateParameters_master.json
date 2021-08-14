@@ -5,11 +5,11 @@
 		"factoryName": {
 			"value": "adf-quadabra-dev"
 		},
-		"key_quadabra_bigdata_properties_typeProperties_baseUrl": {
-			"value": "https://kv-bigdataqu-dev.vault.azure.net/"
-		},
 		"cnn_datalake_quadabra_properties_typeProperties_url": {
 			"value": "https://datalaketaz.dfs.core.windows.net/"
+		},
+		"key_quadabra_bigdata_properties_typeProperties_baseUrl": {
+			"value": "https://kv-bigdataqu-dev.vault.azure.net/"
 		},
 		"containerUri": {
 			"value": ""
