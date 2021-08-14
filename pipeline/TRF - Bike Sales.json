@@ -9,14 +9,45 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "varTest",
-					"value": "aaa"
+					"value": "0"
+				}
+			},
+			{
+				"name": "FL - Bike Sales Join",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "FL - Bike Sales Join",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
 				}
 			}
 		],
 		"variables": {
 			"varTest": {
 				"type": "String",
-				"defaultValue": "aaa"
+				"defaultValue": "a"
 			}
 		},
 		"folder": {
